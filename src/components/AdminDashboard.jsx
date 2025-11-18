@@ -1,3 +1,4 @@
+import { getProducts, getCategories } from '../lib/api.js';
 import { useState, useEffect } from 'react';
 import { 
   Package, 
@@ -42,13 +43,10 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const [productsRes, categoriesRes] = await Promise.all([
-        fetch('http://localhost:8080/api/products'),
-        fetch('http://localhost:8080/api/categories')
+      const [products, categories] = await Promise.all([
+        getProducts(),
+        getCategories()
       ]);
-
-      const products = await productsRes.json();
-      const categories = await categoriesRes.json();
 
       // Simulated revenue and orders data
       setStats({

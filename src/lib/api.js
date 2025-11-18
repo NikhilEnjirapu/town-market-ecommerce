@@ -1,4 +1,4 @@
-const apiBase = '';
+const apiBase = 'http://localhost:8080';
 
 export async function getCategories() {
   const res = await fetch(`${apiBase}/api/categories`);

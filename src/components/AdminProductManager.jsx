@@ -1,3 +1,4 @@
+import { getProducts, getCategories } from '../lib/api.js';
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
 
@@ -25,8 +26,7 @@ export default function AdminProductManager() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/products');
-      const data = await response.json();
+      const data = await getProducts();
       setProducts(data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -35,8 +35,7 @@ export default function AdminProductManager() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/categories');
-      const data = await response.json();
+      const data = await getCategories();
       setCategories(data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -50,8 +49,16 @@ export default function AdminProductManager() {
 
     try {
       const url = editingProduct 
-        ? `http://localhost:8080/api/products/${editingProduct.id}`
-        : 'http://localhost:8080/api/products';
+        ? await fetch(`${apiBase}/api/products/${editingProduct.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(editingProduct),
+          })
+        : await fetch(`${apiBase}/api/products`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(editingProduct),
+          });
       
       const method = editingProduct ? 'PUT' : 'POST';
       
@@ -86,7 +93,7 @@ export default function AdminProductManager() {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/products/${productId}`, {
+      const response = await fetch(`${apiBase}/api/products/${productId}`, {
         method: 'DELETE',
       });
 
