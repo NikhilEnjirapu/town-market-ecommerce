@@ -1,5 +1,5 @@
-import { getProducts, getCategories } from '../lib/api.js';
-import { useState, useEffect } from 'react';
+import { getProducts, getCategories, apiBase } from '../lib/api.js';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit2, Trash2, Save, X, Upload, Image as ImageIcon } from 'lucide-react';
 
 export default function AdminProductManager() {
@@ -42,23 +42,15 @@ export default function AdminProductManager() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
 
     try {
       const url = editingProduct 
-        ? await fetch(`${apiBase}/api/products/${editingProduct.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(editingProduct),
-          })
-        : await fetch(`${apiBase}/api/products`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(editingProduct),
-          });
+        ? `${apiBase}/api/products/${editingProduct.id}`
+        : `${apiBase}/api/products`;
       
       const method = editingProduct ? 'PUT' : 'POST';
       
@@ -66,6 +58,7 @@ export default function AdminProductManager() {
         method,
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
         },
         body: JSON.stringify({
           ...formData,
@@ -87,14 +80,17 @@ export default function AdminProductManager() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [editingProduct, formData, fetchProducts]);
 
-  const handleDelete = async (productId) => {
+  const handleDelete = useCallback(async (productId) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
       const response = await fetch(`${apiBase}/api/products/${productId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
       });
 
       if (response.ok) {
@@ -107,9 +103,9 @@ export default function AdminProductManager() {
       setMessage('Error deleting product');
       console.error('Error:', error);
     }
-  };
+  }, [fetchProducts]);
 
-  const handleEdit = (product) => {
+  const handleEdit = useCallback((product) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -121,9 +117,9 @@ export default function AdminProductManager() {
       featured: product.featured
     });
     setShowAddForm(true);
-  };
+  }, []);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormData({
       name: '',
       description: '',
@@ -135,15 +131,15 @@ export default function AdminProductManager() {
     });
     setEditingProduct(null);
     setShowAddForm(false);
-  };
+  }, []);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -151,14 +147,14 @@ export default function AdminProductManager() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Product Management</h1>
-          <p className="text-gray-600">Add, edit, and manage your product inventory</p>
+          <p className="text-gray-500 font-medium">Add, edit, and manage your product inventory in real-time</p>
         </div>
 
         {/* Message */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            message.includes('success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}>
+          <div className={`mb-6 p-4 rounded-xl shadow-sm border ${
+            message.includes('success') ? 'bg-green-50/80 border-green-200 text-green-800' : 'bg-red-50/80 border-red-200 text-red-800'
+          } backdrop-blur-sm transition-all animate-fade-in`}>
             {message}
           </div>
         )}
@@ -167,7 +163,7 @@ export default function AdminProductManager() {
         <div className="mb-6">
           <button
             onClick={() => setShowAddForm(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors"
           >
             <Plus className="w-5 h-5" />
             Add New Product
@@ -176,7 +172,7 @@ export default function AdminProductManager() {
 
         {/* Add/Edit Product Form */}
         {showAddForm && (
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -350,9 +346,9 @@ export default function AdminProductManager() {
         )}
 
         {/* Products List */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900">Products ({products.length})</h2>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-100">
+            <h2 className="text-xl font-bold text-gray-800">Products ({products.length})</h2>
           </div>
           
           <div className="overflow-x-auto">

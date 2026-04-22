@@ -41,7 +41,7 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div className="text-2xl font-bold text-gray-900 tracking-tight">
-              Town<span className="text-green-600">Market</span>
+              Town<span className="text-blue-600">Market</span>
             </div>
           </div>
 
@@ -52,7 +52,7 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
               <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border-transparent rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-colors"
               />
             </div>
           </div>
@@ -61,8 +61,8 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
           <div className="flex items-center gap-3">
             {/* Delivery Info */}
             <div className="hidden sm:flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-green-600" />
-              <span className="text-gray-700 font-medium">11 min delivery</span>
+              <MapPin className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-600 font-medium">11 min delivery</span>
             </div>
 
             {/* User Account */}
@@ -73,10 +73,10 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
                   className="hidden sm:flex items-center gap-2 hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
                 >
                   {/* Circular Profile */}
-                  <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     {user.fullName ? user.fullName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                   </div>
-                  <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {/* Profile Dropdown */}
@@ -85,7 +85,7 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
                     {/* User Info */}
                     <div className="px-4 py-3 border-b border-gray-100">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-semibold">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
                           {user.fullName ? user.fullName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -100,10 +100,10 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
                       {isAdmin && (
                         <button 
                           onClick={handleAdminPanel}
-                          className="w-full px-4 py-2 text-left hover:bg-green-50 flex items-center gap-3 transition-colors"
+                          className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 transition-colors"
                         >
-                          <Shield className="w-4 h-4 text-green-600" />
-                          <span className="text-sm text-green-700 font-medium">Admin Panel</span>
+                          <Shield className="w-4 h-4 text-blue-600" />
+                          <span className="text-sm text-gray-700 font-medium">Admin Panel</span>
                         </button>
                       )}
                       <button className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 transition-colors">
@@ -134,7 +134,7 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
                 </button>
                 <button
                   onClick={onSignup}
-                  className="text-sm bg-green-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
                 >
                   Signup
                 </button>
@@ -144,11 +144,11 @@ export default function PremiumHeader({ onCartClick, onLogin, onSignup, onLogout
             {/* Cart Button */}
             <button
               onClick={onCartClick}
-              className="relative p-2.5 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+              className="relative p-2.5 hover:bg-gray-100 rounded-lg transition-colors group"
             >
-              <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-green-600 transition-colors" />
+              <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-blue-600 transition-colors" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute top-1 right-1 bg-blue-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-white">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}

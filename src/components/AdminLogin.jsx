@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Shield, Lock, AlertCircle, Mail } from 'lucide-react';
-import { useAdmin } from '../contexts/AdminContext.jsx';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { login } from '../lib/api.js';
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { loginAsAdmin } = useAdmin();
+  const { login: setAuthContext } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,15 +16,16 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const success = loginAsAdmin(password);
-      if (success) {
-        // Successful login - AdminRoute will handle redirect
+      const data = await login({ email, password });
+      setAuthContext(data.user, data.token);
+      
+      if (data.user.email === 'enjirapunikhil@gmail.com') {
         window.location.reload();
       } else {
-        setError('Invalid password');
+        setError('Unauthorized: Admin access required');
       }
     } catch (err) {
-      setError('Login failed. Please try again.');
+      setError('Invalid credentials');
     } finally {
       setIsLoading(false);
     }
@@ -57,10 +60,28 @@ export default function AdminLogin() {
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Password Field */}
+            {/* Email Field */}
             <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Admin Email
+              </label>
+              <div className="relative mb-4">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-green-600 transition-colors"
+                  placeholder="admin@example.com"
+                  required
+                />
+              </div>
+
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Admin Password (Demo)
+                Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -72,7 +93,7 @@ export default function AdminLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-green-600 transition-colors"
-                  placeholder="Enter admin password"
+                  placeholder="Enter password"
                   required
                 />
               </div>
@@ -107,12 +128,9 @@ export default function AdminLogin() {
           </form>
 
           {/* Demo Password Hint */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
             <p className="text-xs text-gray-600 text-center">
-              <span className="font-semibold">Demo Password:</span> admin123
-            </p>
-            <p className="text-xs text-gray-500 text-center mt-1">
-              For demonstration purposes only
+              Login to access the admin features securely.
             </p>
           </div>
         </div>

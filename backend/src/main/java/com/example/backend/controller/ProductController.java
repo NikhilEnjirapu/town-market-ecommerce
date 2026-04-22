@@ -43,8 +43,8 @@ public class ProductController {
                     existingProduct.setName(product.getName());
                     existingProduct.setDescription(product.getDescription());
                     existingProduct.setPrice(product.getPrice());
-                    existingProduct.setImageUrl(product.getImageUrl());
-                    existingProduct.setCategoryId(product.getCategoryId());
+                    existingProduct.setImage_url(product.getImage_url());
+                    existingProduct.setCategory_id(product.getCategory_id());
                     existingProduct.setStock(product.getStock());
                     existingProduct.setFeatured(product.isFeatured());
                     Product updatedProduct = repository.save(existingProduct);

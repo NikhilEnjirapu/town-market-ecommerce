@@ -4,6 +4,7 @@ import com.example.backend.dto.LoginRequest;
 import com.example.backend.dto.SignupRequest;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
+import com.example.backend.security.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,10 +22,12 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/signup")
@@ -48,7 +51,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of(
-                        "token", UUID.randomUUID().toString(),
+                        "token", jwtUtils.generateToken(user.getEmail()),
                         "user", Map.of(
                                 "id", user.getId(),
                                 "fullName", user.getFullName(),
@@ -66,7 +69,7 @@ public class AuthController {
         return userRepository.findByEmail(request.getEmail().toLowerCase())
                 .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPasswordHash()))
                 .map(user -> ResponseEntity.ok(Map.of(
-                        "token", UUID.randomUUID().toString(),
+                        "token", jwtUtils.generateToken(user.getEmail()),
                         "user", Map.of(
                                 "id", user.getId(),
                                 "fullName", user.getFullName(),

@@ -1,11 +1,16 @@
 package com.example.backend.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
 
-@Document(collection = "orders")
+@Entity
+@Table(name = "orders")
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String customer_name;
     private String customer_email;

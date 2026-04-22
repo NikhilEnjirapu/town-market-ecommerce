@@ -1,4 +1,4 @@
-const apiBase = 'http://localhost:8080';
+export const apiBase = 'http://localhost:8081';
 
 export async function getCategories() {
   const res = await fetch(`${apiBase}/api/categories`);
@@ -13,9 +13,13 @@ export async function getProducts() {
 }
 
 export async function createOrder(body) {
+  const token = localStorage.getItem('auth_token');
   const res = await fetch(`${apiBase}/api/orders`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    },
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error('Failed to create order');
@@ -23,9 +27,13 @@ export async function createOrder(body) {
 }
 
 export async function addOrderItems(orderId, items) {
+  const token = localStorage.getItem('auth_token');
   const res = await fetch(`${apiBase}/api/orders/${orderId}/items`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    },
     body: JSON.stringify(items),
   });
   if (!res.ok) throw new Error('Failed to add order items');

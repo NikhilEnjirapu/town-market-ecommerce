@@ -39,16 +39,8 @@ export const AdminProvider = ({ children }) => {
     checkAdminStatus();
   }, [user]); // Re-check when user changes
 
-  const loginAsAdmin = (password) => {
-    // For demo purposes, still allow password login
-    // But main admin access is now email-based
-    if (password === 'admin123') {
-      setIsAdmin(true);
-      localStorage.setItem('isAdmin', 'true');
-      return true;
-    }
-    return false;
-  };
+  // Deprecated manual login logic (handled by AuthContext now)
+  const loginAsAdmin = () => false;
 
   const logout = () => {
     setIsAdmin(false);
@@ -58,7 +50,7 @@ export const AdminProvider = ({ children }) => {
   const value = {
     isAdmin,
     isLoading,
-    loginAsAdmin,
+    loginAsAdmin: () => {}, // Deprecated in favor of real auth
     logout
   };
 
