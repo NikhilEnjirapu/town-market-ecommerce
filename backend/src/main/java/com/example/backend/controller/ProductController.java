@@ -47,6 +47,8 @@ public class ProductController {
                     existingProduct.setCategory_id(product.getCategory_id());
                     existingProduct.setStock(product.getStock());
                     existingProduct.setFeatured(product.isFeatured());
+                    existingProduct.setOriginal_price(product.getOriginal_price());
+                    existingProduct.setUnit(product.getUnit());
                     Product updatedProduct = repository.save(existingProduct);
                     return ResponseEntity.ok(updatedProduct);
                 })

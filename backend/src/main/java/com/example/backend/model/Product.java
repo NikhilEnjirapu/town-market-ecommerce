@@ -17,7 +17,15 @@ public class Product {
     private String category_id;
     private int stock;
     private boolean featured;
+    private Double original_price;
+    private String unit;
     private String created_at;
+
+    public Double getOriginal_price() { return original_price; }
+    public void setOriginal_price(Double original_price) { this.original_price = original_price; }
+
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

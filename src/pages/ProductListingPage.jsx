@@ -9,7 +9,7 @@ export default function ProductListingPage() {
   const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(id ? parseInt(id) : null);
+  const [selectedCategory, setSelectedCategory] = useState(id || null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,7 @@ export default function ProductListingPage() {
 
   useEffect(() => {
     if (id) {
-      setSelectedCategory(parseInt(id));
+      setSelectedCategory(id);
     }
   }, [id]);
 
